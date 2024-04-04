@@ -8,10 +8,11 @@
     <relativePath />
   </parent>
   <groupId>io.jenkins.plugins</groupId>
-  <artifactId>jenkins-ctrf-json-plugin</artifactId>
+  <artifactId>ctrf-json</artifactId>
   <version>${revision}${changelist}</version>
   <packaging>hpi</packaging>
-  <name>TODO Plugin</name>
+  <name>CTRF</name>
+  <description>Allows CTRF JSON test results to be published.</description>
   <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
   <licenses>
     <license>

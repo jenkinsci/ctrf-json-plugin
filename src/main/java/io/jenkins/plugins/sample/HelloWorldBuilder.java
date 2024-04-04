@@ -113,7 +113,7 @@ public class HelloWorldBuilder extends Recorder implements SimpleBuildStep {
             Element testcase = doc.createElement("testcase");
             testcase.setAttribute("classname", "ctrf");
             testcase.setAttribute("name", test.getName());
-            testcase.setAttribute("time", String.valueOf(test.getDuration() / 1000.0)); // Converting ms to seconds
+            testcase.setAttribute("time", String.valueOf(test.getDuration() / 1000.0));
 
             switch (test.getStatus()) {
                 case "failed":
