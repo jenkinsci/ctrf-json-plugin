@@ -1,15 +1,10 @@
-# jenkins-ctrf-json-plugin
-
-to build - mvn clean install -DskipTests
-
-run jenkins on local with latest changes - 
-mvn clean package -DskipTests
-mvn clean install -DskipTests
-mvn hpi:run
+# ctrf-json-plugin
 
 ## Introduction
 
 Publish CTRF JSON test results to Jenkins
+
+## What is CTRF?
 
 Common Test Report Format (CTRF) is a JSON test report schema that provides standardized JSON test results reports.
 
@@ -20,8 +15,6 @@ Common Test Report Format (CTRF) is a JSON test report schema that provides stan
 *Facilitates Enhanced Programmatic Use:* Programatically interacting with test outcomes across multiple tools becomes more straightforward.
 
 ## Getting started
-
-
 
 ## Contributing
 
