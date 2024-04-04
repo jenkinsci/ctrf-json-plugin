@@ -24,7 +24,7 @@ The ctrf-json-plugin for Jenkins allows users to publish Common Test Report Form
 
 1. **Create or Configure a Job:** Go to your Jenkins dashboard and either create a new job or configure an existing one.
 
-2. **Add Build Step:** In the job configuration, navigate to the **Build** section and add a build step named **Publish CTRF test result report**. This option becomes available after installing the ctrf-json-plugin.
+2. **Add Post Build Step:** In the job configuration, navigate to the **Post Build Actions** section and add a post build step named **Publish CTRF test result report**. This option becomes available after installing the ctrf-json-plugin.
 
 3. **Configure the Plugin:** In the plugin configuration section, specify the pattern for your CTRF JSON files. For example, `**/ctrf/*.json` would match all JSON files within a `ctrf` directory in your workspace.
 
