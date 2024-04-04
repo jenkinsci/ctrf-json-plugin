@@ -10,7 +10,8 @@ import hudson.model.AbstractProject;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
-import hudson.tasks.Builder;
+import hudson.tasks.Publisher;
+import hudson.tasks.Recorder;
 import hudson.tasks.junit.JUnitResultArchiver;
 import hudson.util.FormValidation;
 import java.io.FileOutputStream;
@@ -25,14 +26,14 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.jenkinsci.Symbol;
 
-public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
+public class HelloWorldBuilder extends Recorder implements SimpleBuildStep {
 
     private final String jsonFilePattern;
 
@@ -65,8 +66,8 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
                     continue;
                 }
 
-                ObjectMapper objectMapper = new ObjectMapper()
-                        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                ObjectMapper objectMapper =
+                        new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                 TestResults testResults = objectMapper.readValue(jsonContent, TestResults.class);
 
                 Results results = testResults.getResults();
@@ -134,6 +135,11 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
                     systemOut.setTextContent("Test has an 'other' status");
                     testcase.appendChild(systemOut);
                     break;
+                default:
+                    Element unknown = doc.createElement("system-out");
+                    unknown.setTextContent("Test has an unrecognized status: " + test.getStatus());
+                    testcase.appendChild(unknown);
+                    break;
             }
 
             rootElement.appendChild(testcase);
@@ -146,8 +152,8 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
         String junitFilePath = "junitResult-" + jsonFileName + ".xml";
         FilePath junitFile = new FilePath(workspace, junitFilePath);
 
-        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(junitFile.getRemote()),
-                StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer =
+                new OutputStreamWriter(new FileOutputStream(junitFile.getRemote()), StandardCharsets.UTF_8)) {
             StreamResult result = new StreamResult(writer);
             transformer.transform(source, result);
         }
@@ -157,7 +163,7 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
 
     @Extension
     @Symbol("publishCtrfResults")
-    public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
+    public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
         @Override
         public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
             req.bindJSON(this, formData);
