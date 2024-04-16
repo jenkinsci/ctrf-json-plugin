@@ -121,6 +121,11 @@ public class HelloWorldBuilder extends Recorder implements SimpleBuildStep {
                     failure.setAttribute("message", "Test failed");
                     testcase.appendChild(failure);
                     break;
+                case "passed":
+                    Element passed = doc.createElement("passed");
+                    passed.setAttribute("message", "Test passed");
+                    testcase.appendChild(passed);
+                    break;
                 case "skipped":
                     Element skipped = doc.createElement("skipped");
                     testcase.appendChild(skipped);

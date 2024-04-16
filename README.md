@@ -37,3 +37,10 @@ Contributions to the ctrf-json-plugin are welcome! Please refer to the [CONTRIBU
 ## LICENSE
 
 The ctrf-json-plugin is open-sourced software licensed under the [MIT license](LICENSE.md).
+
+to build - mvn clean install -DskipTests
+
+run jenkins on local with latest changes - 
+mvn clean package -DskipTests
+mvn clean install -DskipTests
+mvn hpi:run
