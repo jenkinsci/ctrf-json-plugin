@@ -1,4 +1,4 @@
-package io.jenkins.plugins.sample;
+package io.jenkins.plugins.PublishCtrfJson;
 
 public class ToolInfo {
     private String name;

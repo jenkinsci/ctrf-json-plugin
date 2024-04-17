@@ -1,4 +1,4 @@
-package io.jenkins.plugins.sample;
+package io.jenkins.plugins.PublishCtrfJson;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,12 +33,12 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class HelloWorldBuilder extends Recorder implements SimpleBuildStep {
+public class PublishCtrfJson extends Recorder implements SimpleBuildStep {
 
     private final String jsonFilePattern;
 
     @DataBoundConstructor
-    public HelloWorldBuilder(String jsonFilePattern) {
+    public PublishCtrfJson(String jsonFilePattern) {
         this.jsonFilePattern = jsonFilePattern;
     }
 
