@@ -176,6 +176,7 @@ public class HelloWorldBuilder extends Recorder implements SimpleBuildStep {
             return super.configure(req, formData);
         }
 
+        @SuppressWarnings("lgtm[jenkins/credentials-fill-without-permission-check]")
         public FormValidation doCheckJsonFilePattern(@QueryParameter String value) {
             if (value.isEmpty()) {
                 return FormValidation.error("The JSON file path must not be empty.");
