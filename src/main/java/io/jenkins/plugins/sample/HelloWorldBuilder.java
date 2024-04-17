@@ -66,7 +66,7 @@ public class HelloWorldBuilder extends Recorder implements SimpleBuildStep {
                     continue;
                 }
 
-                ObjectMapper objectMapper = 
+                ObjectMapper objectMapper =
                         new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                 TestResults testResults = objectMapper.readValue(jsonContent, TestResults.class);
 
@@ -166,7 +166,7 @@ public class HelloWorldBuilder extends Recorder implements SimpleBuildStep {
         String junitFilePath = "junitResult-" + jsonFileName + ".xml";
         FilePath junitFile = new FilePath(workspace, junitFilePath);
 
-        try (OutputStreamWriter writer = 
+        try (OutputStreamWriter writer =
                 new OutputStreamWriter(new FileOutputStream(junitFile.getRemote()), StandardCharsets.UTF_8)) {
             StreamResult result = new StreamResult(writer);
             transformer.transform(source, result);
