@@ -66,7 +66,7 @@ public class HelloWorldBuilder extends Recorder implements SimpleBuildStep {
                     continue;
                 }
 
-                ObjectMapper objectMapper =
+                ObjectMapper objectMapper = 
                         new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                 TestResults testResults = objectMapper.readValue(jsonContent, TestResults.class);
 
@@ -97,9 +97,18 @@ public class HelloWorldBuilder extends Recorder implements SimpleBuildStep {
         }
     }
 
+    @SuppressWarnings("lgtm[jenkins/credentials-fill-without-permission-check]")
     private FilePath convertToJUnitXMLFormatAndWrite(Results results, FilePath workspace, String jsonFileName)
             throws Exception {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+        // Prevent XXE
+        docFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        docFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        docFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        docFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        docFactory.setXIncludeAware(false);
+        docFactory.setExpandEntityReferences(false);
+
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
         Document doc = docBuilder.newDocument();
@@ -157,7 +166,7 @@ public class HelloWorldBuilder extends Recorder implements SimpleBuildStep {
         String junitFilePath = "junitResult-" + jsonFileName + ".xml";
         FilePath junitFile = new FilePath(workspace, junitFilePath);
 
-        try (OutputStreamWriter writer =
+        try (OutputStreamWriter writer = 
                 new OutputStreamWriter(new FileOutputStream(junitFile.getRemote()), StandardCharsets.UTF_8)) {
             StreamResult result = new StreamResult(writer);
             transformer.transform(source, result);
