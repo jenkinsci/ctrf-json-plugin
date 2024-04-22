@@ -97,7 +97,7 @@ public class PublishCtrfJson extends Recorder implements SimpleBuildStep {
         }
     }
 
-    @SuppressWarnings("lgtm[jenkins/credentials-fill-without-permission-check]")
+    @SuppressWarnings({"lgtm[jenkins/csrf]", "lgtm[jenkins/unsafe-classes]"})
     private FilePath convertToJUnitXMLFormatAndWrite(Results results, FilePath workspace, String jsonFileName)
             throws Exception {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -185,7 +185,7 @@ public class PublishCtrfJson extends Recorder implements SimpleBuildStep {
             return super.configure(req, formData);
         }
 
-        @SuppressWarnings("lgtm[jenkins/credentials-fill-without-permission-check]")
+        @SuppressWarnings("lgtm[jenkins/no-permission-check]")
         public FormValidation doCheckJsonFilePattern(@QueryParameter String value) {
             if (value.isEmpty()) {
                 return FormValidation.error("The JSON file path must not be empty.");
