@@ -185,7 +185,7 @@ public class PublishCtrfJson extends Recorder implements SimpleBuildStep {
             return super.configure(req, formData);
         }
 
-        @SuppressWarnings("lgtm[jenkins/no-permission-check]")
+        @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
         public FormValidation doCheckJsonFilePattern(@QueryParameter String value) {
             if (value.isEmpty()) {
                 return FormValidation.error("The JSON file path must not be empty.");
