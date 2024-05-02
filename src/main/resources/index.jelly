@@ -1,4 +1,4 @@
 <?jelly escape-by-default='true'?>
 <div>
-    TODO
+  Allows CTRF JSON test results to be published.
 </div>
