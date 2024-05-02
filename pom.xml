@@ -28,7 +28,7 @@
   </scm>
   <properties>
     <revision>1.0</revision>
-    <changelist />
+    <changelist>-SNAPSHOT</changelist>
 
     <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
     <jenkins.version>2.426.3</jenkins.version>
