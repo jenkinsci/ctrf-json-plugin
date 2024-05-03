@@ -55,68 +55,69 @@ public class PublishCtrfJson extends Recorder implements SimpleBuildStep {
 
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, EnvVars env, Launcher launcher, TaskListener listener)
-        throws InterruptedException, IOException {
-    FilePath[] jsonFiles = workspace.list(this.jsonFilePattern);
+            throws InterruptedException, IOException {
+        FilePath[] jsonFiles = workspace.list(this.jsonFilePattern);
 
-    if (jsonFiles.length == 0) {
-        listener.getLogger().println("No JSON test results found matching pattern: " + this.jsonFilePattern);
-        return;
-    }
-
-    JsonFactory jsonFactory = new JsonFactory();
-    ObjectMapper objectMapper = new ObjectMapper(jsonFactory);
-    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-    for (FilePath jsonFile : jsonFiles) {
-        listener.getLogger().println("Processing JSON report: " + jsonFile.getRemote());
-
-        if (jsonFile.length() == 0) {
-            listener.getLogger().println("Ignoring empty JSON file: " + jsonFile.getRemote());
-            continue;
+        if (jsonFiles.length == 0) {
+            listener.getLogger().println("No JSON test results found matching pattern: " + this.jsonFilePattern);
+            return;
         }
 
-        try (InputStream inputStream = jsonFile.read()) {
-            JsonParser jsonParser = jsonFactory.createParser(inputStream);
-            if (!containsResultsKey(jsonParser)) {
-                listener.getLogger().println("Ignoring non-CTRF JSON file: " + jsonFile.getRemote());
+        JsonFactory jsonFactory = new JsonFactory();
+        ObjectMapper objectMapper = new ObjectMapper(jsonFactory);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        for (FilePath jsonFile : jsonFiles) {
+            listener.getLogger().println("Processing JSON report: " + jsonFile.getRemote());
+
+            if (jsonFile.length() == 0) {
+                listener.getLogger().println("Ignoring empty JSON file: " + jsonFile.getRemote());
                 continue;
             }
 
-            jsonParser.close();
-            TestResults testResults = objectMapper.readValue(jsonFile.read(), TestResults.class);
-            Results results = testResults.getResults();
-            if (results == null) {
-                listener.getLogger().println("No test results found in " + jsonFile.getRemote());
-                continue;
-            }
-
-            try {
-                FilePath junitReport = convertToJUnitXMLFormatAndWrite(results, workspace, jsonFile.getName());
-                if (junitReport != null) {
-                    try {
-                        JUnitResultArchiver archiver = new JUnitResultArchiver(junitReport.getName());
-                        archiver.perform(run, workspace, env, launcher, listener);
-                    } catch (Exception e) {
-                        listener.getLogger()
-                                .println("Error publishing JUnit report for " + jsonFile.getRemote() + ": "
-                                + e.getMessage());
-                        e.printStackTrace(listener.getLogger());
-                        run.setResult(Result.FAILURE); 
-                    }
+            try (InputStream inputStream = jsonFile.read()) {
+                JsonParser jsonParser = jsonFactory.createParser(inputStream);
+                if (!containsResultsKey(jsonParser)) {
+                    listener.getLogger().println("Ignoring non-CTRF JSON file: " + jsonFile.getRemote());
+                    continue;
                 }
-            } catch (TransformerException | ParserConfigurationException e) {
+
+                jsonParser.close();
+                TestResults testResults = objectMapper.readValue(jsonFile.read(), TestResults.class);
+                Results results = testResults.getResults();
+                if (results == null) {
+                    listener.getLogger().println("No test results found in " + jsonFile.getRemote());
+                    continue;
+                }
+
+                try {
+                    FilePath junitReport = convertToJUnitXMLFormatAndWrite(results, workspace, jsonFile.getName());
+                    if (junitReport != null) {
+                        try {
+                            JUnitResultArchiver archiver = new JUnitResultArchiver(junitReport.getName());
+                            archiver.perform(run, workspace, env, launcher, listener);
+                        } catch (Exception e) {
+                            listener.getLogger()
+                                    .println("Error publishing JUnit report for " + jsonFile.getRemote() + ": "
+                                            + e.getMessage());
+                            e.printStackTrace(listener.getLogger());
+                            run.setResult(Result.FAILURE);
+                        }
+                    }
+                } catch (TransformerException | ParserConfigurationException e) {
+                    listener.getLogger()
+                            .println("Error transforming XML for " + jsonFile.getRemote() + ": " + e.getMessage());
+                    e.printStackTrace(listener.getLogger());
+                    run.setResult(Result.FAILURE);
+                }
+            } catch (IOException e) {
                 listener.getLogger()
-                        .println("Error transforming XML for " + jsonFile.getRemote() + ": " + e.getMessage());
+                        .println("Failed to process JSON file: " + jsonFile.getRemote() + ": " + e.getMessage());
                 e.printStackTrace(listener.getLogger());
-                run.setResult(Result.FAILURE); 
+                run.setResult(Result.FAILURE);
             }
-        } catch (IOException e) {
-            listener.getLogger().println("Failed to process JSON file: " + jsonFile.getRemote() + ": " + e.getMessage());
-            e.printStackTrace(listener.getLogger());
-            run.setResult(Result.FAILURE);
         }
     }
-}
 
     private boolean containsResultsKey(JsonParser jsonParser) throws IOException {
         while (jsonParser.nextToken() != null) {
@@ -126,7 +127,8 @@ public class PublishCtrfJson extends Recorder implements SimpleBuildStep {
         }
         return false;
     }
-    @SuppressWarnings({"lgtm[jenkins/csrf]", "lgtm[jenkins/unsafe-classes]"})
+
+    @SuppressWarnings({ "lgtm[jenkins/csrf]", "lgtm[jenkins/unsafe-classes]" })
     private FilePath convertToJUnitXMLFormatAndWrite(Results results, FilePath workspace, String jsonFileName)
             throws IOException, TransformerException, ParserConfigurationException {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -195,8 +197,8 @@ public class PublishCtrfJson extends Recorder implements SimpleBuildStep {
         String junitFilePath = "junitResult-" + jsonFileName + ".xml";
         FilePath junitFile = new FilePath(workspace, junitFilePath);
 
-        try (OutputStreamWriter writer =
-        new OutputStreamWriter(new FileOutputStream(junitFile.getRemote()), StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(junitFile.getRemote()),
+                StandardCharsets.UTF_8)) {
             StreamResult result = new StreamResult(writer);
             transformer.transform(source, result);
         }
@@ -214,7 +216,7 @@ public class PublishCtrfJson extends Recorder implements SimpleBuildStep {
             return super.configure(req, formData);
         }
 
-        @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
+        @SuppressWarnings({ "lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]" })
         public FormValidation doCheckJsonFilePattern(@QueryParameter String value) {
             if (value.isEmpty()) {
                 return FormValidation.error("The JSON file path must not be empty.");
