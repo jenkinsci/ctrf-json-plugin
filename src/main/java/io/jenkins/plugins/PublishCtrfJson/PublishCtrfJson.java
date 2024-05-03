@@ -58,6 +58,11 @@ public class PublishCtrfJson extends Recorder implements SimpleBuildStep {
             throws InterruptedException, IOException {
         FilePath[] jsonFiles = workspace.list(this.jsonFilePattern);
 
+        if (jsonFiles == null || jsonFiles.length == 0) {
+            listener.getLogger().println("No JSON test results found matching pattern: " + this.jsonFilePattern);
+            return;
+        }
+
         if (jsonFiles.length == 0) {
             listener.getLogger().println("No JSON test results found matching pattern: " + this.jsonFilePattern);
             return;
