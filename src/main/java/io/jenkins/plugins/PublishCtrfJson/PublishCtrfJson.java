@@ -63,11 +63,6 @@ public class PublishCtrfJson extends Recorder implements SimpleBuildStep {
             return;
         }
 
-        if (jsonFiles.length == 0) {
-            listener.getLogger().println("No JSON test results found matching pattern: " + this.jsonFilePattern);
-            return;
-        }
-
         JsonFactory jsonFactory = new JsonFactory();
         ObjectMapper objectMapper = new ObjectMapper(jsonFactory);
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
