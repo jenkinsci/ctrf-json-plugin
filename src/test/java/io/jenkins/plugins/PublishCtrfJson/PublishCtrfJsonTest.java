@@ -3,31 +3,34 @@ package io.jenkins.plugins.PublishCtrfJson;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.*;
-
+import hudson.FilePath;
+import hudson.model.Result;
+import hudson.model.Run;
 import hudson.model.TaskListener;
 import java.io.ByteArrayInputStream;
 import java.io.PrintStream;
-
-import hudson.model.Run;
-import hudson.FilePath;
-import hudson.model.Result;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.*;
 
 class PublishCtrfJsonTest {
 
     @Mock
     private Run<?, ?> run;
+
     @Mock
     private FilePath workspace;
+
     @Mock
     private TaskListener listener;
+
     @Mock
     private FilePath jsonFile;
+
     @InjectMocks
     private PublishCtrfJson publisher;
+
     private AutoCloseable closeable;
 
     @Mock
@@ -43,10 +46,11 @@ class PublishCtrfJsonTest {
 
     @Test
     void testProcessValidJsonFile() throws Exception {
-        when(workspace.list("**/*.json")).thenReturn(new FilePath[] { jsonFile });
-        when(jsonFile.read()).thenReturn(new ByteArrayInputStream(
-                "{ \"results\": [{ \"name\": \"Test1\", \"status\": \"passed\", \"duration\": \"3534\" }] }"
-                        .getBytes()));
+        when(workspace.list("**/*.json")).thenReturn(new FilePath[] {jsonFile});
+        when(jsonFile.read())
+                .thenReturn(new ByteArrayInputStream(
+                        "{ \"results\": [{ \"name\": \"Test1\", \"status\": \"passed\", \"duration\": \"3534\" }] }"
+                                .getBytes()));
         publisher.perform(run, workspace, null, null, listener);
         verify(listener.getLogger()).println("Processing JSON report: " + jsonFile.getRemote());
         verify(run, never()).setResult(Result.FAILURE);
@@ -64,7 +68,7 @@ class PublishCtrfJsonTest {
 
     @Test
     void testIgnoringNonCTRFJsonFile() throws Exception {
-        when(workspace.list("**/*.json")).thenReturn(new FilePath[] { jsonFile });
+        when(workspace.list("**/*.json")).thenReturn(new FilePath[] {jsonFile});
         when(jsonFile.getRemote()).thenReturn("nonCTRF.json");
         when(jsonFile.length()).thenReturn(100L);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream("{}".getBytes());

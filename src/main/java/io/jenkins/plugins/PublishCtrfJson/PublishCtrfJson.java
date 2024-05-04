@@ -128,7 +128,7 @@ public class PublishCtrfJson extends Recorder implements SimpleBuildStep {
         return false;
     }
 
-    @SuppressWarnings({ "lgtm[jenkins/csrf]", "lgtm[jenkins/unsafe-classes]" })
+    @SuppressWarnings({"lgtm[jenkins/csrf]", "lgtm[jenkins/unsafe-classes]"})
     private FilePath convertToJUnitXMLFormatAndWrite(Results results, FilePath workspace, String jsonFileName)
             throws IOException, TransformerException, ParserConfigurationException {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -197,8 +197,8 @@ public class PublishCtrfJson extends Recorder implements SimpleBuildStep {
         String junitFilePath = "junitResult-" + jsonFileName + ".xml";
         FilePath junitFile = new FilePath(workspace, junitFilePath);
 
-        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(junitFile.getRemote()),
-                StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer =
+                new OutputStreamWriter(new FileOutputStream(junitFile.getRemote()), StandardCharsets.UTF_8)) {
             StreamResult result = new StreamResult(writer);
             transformer.transform(source, result);
         }
@@ -216,7 +216,7 @@ public class PublishCtrfJson extends Recorder implements SimpleBuildStep {
             return super.configure(req, formData);
         }
 
-        @SuppressWarnings({ "lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]" })
+        @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
         public FormValidation doCheckJsonFilePattern(@QueryParameter String value) {
             if (value.isEmpty()) {
                 return FormValidation.error("The JSON file path must not be empty.");
