@@ -112,7 +112,7 @@ public class PublishCtrfJson extends Recorder implements SimpleBuildStep {
                 }
             } catch (IOException e) {
                 listener.getLogger()
-                        .println("Failed to process the JSON file: " + jsonFile.getRemote() + ": " + e.getMessage());
+                        .println("Failed to process JSON file: " + jsonFile.getRemote() + ": " + e.getMessage());
                 e.printStackTrace(listener.getLogger());
                 run.setResult(Result.FAILURE);
             }
